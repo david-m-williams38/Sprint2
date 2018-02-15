@@ -325,6 +325,7 @@ testing other code, this is currently useless
 		private String desc = "";
 		private String timeAhora = "";
 		private long totTime = 0;
+
 		public Task(String name, LinkedList<TaskLogEntry> entries) {
 			this.name = name;
 			//WHY IS THIS BEING WRITTEN AS THE GODDAMN DESCRIPTION
@@ -344,7 +345,7 @@ testing other code, this is currently useless
 							lastStart = null;
 							break;
 						case "DESCRIBE":
-							desc = entry.desc;
+							desc += " " + entry.desc;
 					}
 				}
 			}

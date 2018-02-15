@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 public class TM {
 
 	ArrayList<String> al = new ArrayList<String>();
-
+	public String Size = "";
 	void Usage() {
 
 		System.err.println("To use this program you must run it by one of the following:");
@@ -26,12 +26,15 @@ public class TM {
 	String data = "";
 	String desc = "";
 
+
 	Log log = new Log();
 
 	LocalDateTime timeRN = LocalDateTime.now();
 
 	try {
 		cmd = args[0];
+
+
 
 		cmd = cmd.toUpperCase();
 
@@ -75,11 +78,33 @@ public class TM {
 					cmdSummary(data, log);
 				}
 				break;
-			case "DESCRIBE": cmdDescribe(data, log, cmd, timeRN, desc);
+			case "DESCRIBE": if(args.length == 4)
+			{
+				Size = args[3];
+				cmdDescribe(data, log, cmd, timeRN, desc, Size);
+			} else {
+
+				cmdDescribe(data, log, cmd, timeRN, desc);
+
+			}
+				break;
+			case "SIZE": 
+				if(args.length == 3) {
+					Size = args[2];
+					cmdSize(data, log, cmd, timeRN, Size);
+				}
 				break;
 			}
 		}
 
+
+
+	void cmdSize(String data, Log log, String cmd, LocalDateTime timeRN, String Size) throws IOException {
+
+		String line = (timeRN + " " + data + " " + cmd + " " + Size);
+		log.writeLine(line);
+
+	}
 
 
 	void cmdStart(String data, Log log, String cmd, LocalDateTime timeRN) throws IOException{
@@ -183,6 +208,14 @@ testing other code, this is currently useless
 	void cmdDescribe(String data, Log log, String cmd, LocalDateTime timeRN, String desc) throws IOException {
 
 		String line = (timeRN + " " + data + " " + cmd + " " + desc);
+		log.writeLine(line);
+
+	}
+
+
+	void cmdDescribe(String data, Log log, String cmd, LocalDateTime timeRN, String desc, String Size) throws IOException {
+
+		String line = (timeRN + " " + data + " " + cmd + " " + desc + " " + Size);
 		log.writeLine(line);
 
 	}
@@ -321,7 +354,7 @@ testing other code, this is currently useless
 
 
 		public String toString() {
-			String stringbean = ("\nSummary for Task: " + this.name + "\nDescription for Task: " + this.desc + "\nDuration for Task: " + this.timeAhora );
+			String stringbean = ("\nSummary for Task: " + this.name + "\nDescription for Task: " + this.desc + Size + "\nDuration for Task: " + this.timeAhora );
 			return stringbean;
 		}
 

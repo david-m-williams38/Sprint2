@@ -1,3 +1,21 @@
+/**
+*
+*	Created by: David M Williams
+*	Program's function: To keep track of certain and all tasks, allowing for data to be stored on each task
+*	Team: TBA (Currently a solo project)
+*	Class: Sacramento State University CSC 131
+*
+**/
+
+/**
+*
+*	Import time functions for timing the operations,
+*	as well as use them for calculations on timing for tasks
+*	Import standard java.io for regular usage functions
+*	Use java.util for certain operations to complete summary of tasks
+*	as well as perhaps other smaller operations
+*
+**/
 import java.io.*;
 import java.time.*;
 import java.util.*;
@@ -5,97 +23,173 @@ import java.time.temporal.ChronoUnit;
 
 
 
+// The whole program relies on this class to run appropriately
 public class TM {
-
+	
+	// Initialize an arraylist with name 'al'
+	// This was originally to be used for other operations,
+	// but its current usage is to be a placeholder in case it is needed
+	// Maybe used later in the development of the program....
+	// It is also placed here for usage in all methods
 	ArrayList<String> al = new ArrayList<String>();
-	public String Size = "";
-	void Usage() {
 
+	// Initialize Size, for use in declaring tasks as L, XS, S, M, and so on...
+	// set the String size to "" so it is initialized and compiles/runs accordingly
+	public String Size = "";
+
+	// This Usage() function is to be called once an error occurs in the program
+	// It will state how to use the program correctly when called
+	void Usage() {
 		System.err.println("To use this program you must run it by one of the following:");
 		System.err.println("TM Start <Task>");
 		System.err.println("TM Stop <Task>");
-		System.err.println("TM Describe <Task> <Description, Using Quotes>");
+		System.err.println("TM Describe <Task> <Description, Using Quotes> [Optional]<Size>[Optional]");
 		System.err.println("TM Summary <Task>");
 		System.err.println("TM Summary");
-
+		System.err.println("TM Size <Task>");
 	}
 
+
+	// This is the portion of the application that runs first
+	public static void main(String[] args) throws IOException {
+		// The only function of this main(...) is to run the next set of tasks
+		// This is a simplified statement that creates a new TM() function
+		// It then runs appMain with the args array that is supplied when the program is run
+		new TM().appMain(args);
+	}
+
+	// appMain is called through the main(...) method
+	// If there is an error it will throw an IOException,
+	// Basically a try catch function without the need for all catch statements 
 	void appMain(String [] args) throws IOException {
 
-	String cmd = "";
-	String data = "";
-	String desc = "";
+		// for the following comments: "~" = "Stands For"/"Represents"
+		// Initialize cmd with empty quotes so it has a starting value in memory
+		// cmd ~ command
+		String cmd = "";
+		// Initialize data with empty quotes so it has a starting value in memory
+		// data ~ Name
+		// It should represent the Task name in the current state of this application,
+		// yet might change its function to be for multiple scenarios
+		String data = "";
+		// Initialize desc with empty quotes so it has a starting value in memory
+		// desc ~ description
+		String desc = "";
 
 
-	Log log = new Log();
+		// Create a new Log() function
+		// This will allow all commands, task name, descriptions, etc. to be written to a log file and be stored
+		Log log = new Log();
 
-	LocalDateTime timeRN = LocalDateTime.now();
+		// Create a new LocalDateTime with name of timeRN, this will get the exact current time when called
+		// This will allow for time calculations and start and end times to be completed
+		LocalDateTime timeRN = LocalDateTime.now();
 
-	try {
-		cmd = args[0];
+		// created a try/catch block that will output the Usage() statement if there is an error
+		try {
+			// set the command as the first argument in the running of the program
+			cmd = args[0];
 
+			// make the command argument all uppercase
+			// This will allow any mixture of uppercase and lower case in the command argument to be used
+			cmd = cmd.toUpperCase();
 
+			// Check to see if the command equals uppercase "DESCRIBE"
+			// It is uppercase because the command value should be set to uppercase in a previous statement.
+			if(cmd.equals("DESCRIBE")){
 
-		cmd = cmd.toUpperCase();
+				// If DESCRIBE is the command, set the third argument (as it starts at 0) to be the description
+				// This will set the "desc" as the actual description to be saved, later in the program
+				desc = args[2];
 
-		if(cmd.equals("DESCRIBE")){
+			}
+			// If it is not equal to DESCRIBE, set the description to an empty value of a String
+			// This will make sure that it won't have an error if there is no description
+			else {
+				desc = "";
+			}
 
-			desc = args[2];
+			// Check to see if the command equals SUMMARY (uppper case once again, as I set it to all uppercase previously)
+			// If that is true, it will check the next part of the IF statement,
+			// which checks to see if there are less than 2 argument statments
+			if(cmd.equals("SUMMARY") && args.length < 2){
+
+				// If this is true set the name (aka 'data') to be null, as it is not needed if these are true
+				data = null;
+
+			}
+			// Every other case that doesn't follow this statement will then make the name (aka 'data'),
+			// to be the second argument, allowing for the continuation of the program
+			else {
+				data = args[1];
+			}
 
 		}
-		else {
-			desc = "";
+		// If any of these fail due to an exception of too many or too few arguments it will print out the Usage() statement
+		// This will allow the user to understand how to run the program
+		catch (ArrayIndexOutOfBoundsException err) {
+			Usage();
 		}
-		
-		if(cmd.equals("SUMMARY") && args.length < 2){
 
-			data = null;
-
-		}
-		else {
-
-			data = args[1];
-
-		}
-	}
-	catch (ArrayIndexOutOfBoundsException err) {
-
-		Usage();
-
-	}
-
+		// Set up a SWITCH statement to check for each of the UPPERCASE values of the command
 		switch(cmd){
-
+			// If the case is STOP, pass in the following:
+			// data, also known as the name of the task
+			// log, the initialized log file that will handle the data, and record all of it
+			// cmd, aka the UPPERCASE command that was run
+			// timeRN, aka the LocalDateTime.now() command which gets the current time down past the second
 			case "STOP": cmdStop(data, log, cmd, timeRN);
 				break;
+			// if the case is START, pass in the following:
+			// data, also known as the name of the task
+			// log, the initialized log file that will handle the data, and record all of it
+			// cmd, aka the UPPERCASE command that was run
+			// timeRN, aka the LocalDateTime.now() command which gets the current time down past the second
 			case "START": cmdStart(data, log, cmd, timeRN);
 				break;
+			// If the case is SUMMARY, it will run into and if/else scenario
 			case "SUMMARY": 
+				// If the name of the task is unknown, it means that the user is requesting the full summary/log file
 				if(data == null) {
+					// This will just pass the log only, which will run into the appropriate method,
+					// to return all summary data
 					cmdSummary(log);
 				}
 				else {
+					// if there is any other data, it will send the name of the task,
+					// as well as the log file previously created
 					cmdSummary(data, log);
 				}
 				break;
-			case "DESCRIBE": if(args.length == 4)
-			{
-				Size = args[3];
-				cmdDescribe(data, log, cmd, timeRN, desc, Size);
-			} else {
-
-				cmdDescribe(data, log, cmd, timeRN, desc);
-
-			}
+			case "DESCRIBE":
+				// if there are exactly 4 arguments in the case of the DESCRIBE command, 
+				// it means there is a size parameter also being passed into the according method 
+				if(args.length == 4) {
+					// Set the Size as the fourth element of the arguments provided 
+					Size = args[3];
+					// Send the same data, log, cmd, and timeRN into the correct method as the other case statements
+					// Also pass into the cmdDescribe method, the description of the task that was supplied
+					// As well as the Size of the task that was also supplied
+					cmdDescribe(data, log, cmd, timeRN, desc, Size);
+				} else {
+					// Send all the same data as the previous describe case, except exclude the Size, as this was not supplied
+					cmdDescribe(data, log, cmd, timeRN, desc);
+				}
 				break;
-			case "SIZE": 
+			// If the SIZE is supplied, go to this case, and then enter the below if/else statement
+			case "SIZE":
+				// This says if there are exactly 3 arguments enter this statement
 				if(args.length == 3) {
+					// if there are the correct number of arguments, use these to set the Size parameter as the third argument
 					Size = args[2];
+					// Send all the data (Previously described), into the cmdSize method as shown
 					cmdSize(data, log, cmd, timeRN, Size);
 				}
 				break;
-			}
+			// NO NEED FOR DEFAULT CASE, AS THIS WAS ALREADY HANDLED PREVIOUSLY
+			// If I put another Usage() case, it will the same this out twice, TESTED AND CONFIRMED
 		}
+	}
 
 
 
@@ -124,18 +218,6 @@ public class TM {
 
 
 	void cmdSummary(Log log) throws IOException{
-/**
-		long totTime = 0;
-		LinkedList<TaskLogEntry> lines = log.readFile();
-		
-		TreeSet<String> nameData = new TreeSet<String>();
-
-		for(TaskLogEntry entry : lines) {
-
-			nameData.add(entry.data);
-
-		}
-		*/
 
 		Scanner mine = null;
 		File myfile = new File("TM.log");
@@ -145,22 +227,14 @@ public class TM {
 			String lineOfFile = mine.nextLine();
 			if(!(lineOfFile.contains("null"))) {
 
-				//I don't remember why i have this, but removing it works YEA!
-//				if(lineOfFile.contains(" DESCRIBE ")) {
-
-					System.out.println(lineOfFile);
-
-//				}
+				System.out.println(lineOfFile);
 
 			}
 
 		}
-		//log.writeLine(line);
 
-		
 		log.readFile();
 
-		
 	}
 		
 	long cmdSummary(String todo, Log log) throws IOException {
@@ -176,32 +250,6 @@ public class TM {
 		return sumTask.totTime;
 		
 	}
-		
-/**
-testing other code, this is currently useless
-
-		Scanner mine = null;
-		File myfile = new File("TM.log");
-		mine = new Scanner(myfile);
-		while(mine.hasNext()) {
-
-			String lineOfFile = mine.nextLine();
-			if(lineOfFile.contains(data)) {
-
-				if(lineOfFile.contains(" DESCRIBE ")) {
-
-					System.out.println(lineOfFile);
-
-				}
-
-			}
-
-		}
-		log.writeLine(line);
-
-		
-		log.readLog();
-*/
 	
 
 
@@ -221,17 +269,7 @@ testing other code, this is currently useless
 	}
 
 
-	public static void main(String[] args) throws IOException {
 
-		new TM().appMain(args);
-
-		/**System.out.println("Test Number 1");
-
-		System.out.println("args[0] = " + args[0]);
-
-		System.out.println("args[1] = " + args[1]);
-		*/
-	}
 
 	public class Log{
 
@@ -370,17 +408,4 @@ testing other code, this is currently useless
 
 	}
 
-/**
-
-This is crap code for the time being...
-
-			public LogEntry(String taskLine) {
-
-				StringTokenizer stok = new StringTokenizer(taskLine, " ");
-				int nTokens = stok.countTokens();
-				timeRN = LocalDateTime.parse(stok.nextToken());
-
-			}
-			
-*/
 }

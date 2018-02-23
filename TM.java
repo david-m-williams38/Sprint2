@@ -112,6 +112,7 @@ public class TM {
 			// Check to see if the command equals SUMMARY (uppper case once again, as I set it to all uppercase previously)
 			// If that is true, it will check the next part of the IF statement,
 			// which checks to see if there are less than 2 argument statments
+			// Kept the two if statements separate due to the ending else statements being different
 			if(cmd.equals("SUMMARY") && args.length < 2){
 
 				// If this is true set the name (aka 'data') to be null, as it is not needed if these are true
@@ -191,52 +192,97 @@ public class TM {
 		}
 	}
 
-
-
+	// This is the method called once the command specifies that it is adding a Size to a task
+	// It will throw an IOException once there is one, which removes the requirement of try/catch block
 	void cmdSize(String data, Log log, String cmd, LocalDateTime timeRN, String Size) throws IOException {
-
+		// This saves all the handled variables into a String
+		// Thus allowing it to be printed into the log file with ease
 		String line = (timeRN + " " + data + " " + cmd + " " + Size);
+		// This takes the previous String named 'line' and saves the data into the log file,
+		// and it does this by using the initiated log file and using writeLine with the String as the input of the function
 		log.writeLine(line);
-
 	}
 
-
+	// This method takes the data from the switch statement of START
+	// It then defines the data types, such as String data, Log log, and so on
+	// It will throw an IOException in an error is encountered, allowing for the exclusion of a try/catch block
 	void cmdStart(String data, Log log, String cmd, LocalDateTime timeRN) throws IOException{
-
+		// This behaves exactly as the previous String line in the other methods, just might handle different variables
 		String line = (timeRN + " " + data + " " + cmd);
 		log.writeLine(line);
 
 
 	}
 
+	// Handles the STOP command from the switch statement
+	// It will receive all the data that is provided in the switch statement
+	// If there is an error, it should throw an IOException, eliminating the need for a try/catch block
 	void cmdStop(String data, Log log, String cmd, LocalDateTime timeRN) throws IOException{
-
+		// This behaves exactly as the previous String line in the other methods, just might handle different variables
 		String line = (timeRN + " " + data + " " + cmd);
 		log.writeLine(line);
 
 	}
 
+	// Handles one part of the DESCRIBE in the switch statement
+	// This one will only run if there isn't a size parameter
+	// If there is an IOException error, it will be thrown, therefore no need for a try/catch block
+	void cmdDescribe(String data, Log log, String cmd, LocalDateTime timeRN, String desc) throws IOException {
+		// This behaves exactly as the previous String line in the other methods, just might handle different variables
+		String line = (timeRN + " " + data + " " + cmd + " " + desc);
+		log.writeLine(line);
 
+	}
+
+	// This is the alternate method for the DESCRIBE operation handled by the switch statement
+	// This will run if there IS a size parameter added at the end of the command when the application is run
+	// No need for a try/catch block due to the 'throws IOException' statement
+	void cmdDescribe(String data, Log log, String cmd, LocalDateTime timeRN, String desc, String Size) throws IOException {
+		// This behaves exactly as the previous String line in the other methods, just might handle different variables
+		String line = (timeRN + " " + data + " " + cmd + " " + desc + " " + Size);
+		log.writeLine(line);
+
+	}
+
+
+	// This is one of the TWO cmdSummary methods, this one only handles the whole output of the log file
+	// There is no task supplied in order to run this command
+	// Once again, no need for a try/catch block due to the error that will be thrown, if there is one
 	void cmdSummary(Log log) throws IOException{
 
+		// Set the initial value of 'null' so it can be used correctly (And will allow it to compile)
+		// This is the scanner, I named it 'mine' in order to differentiate that it is reading MY log file that was supplied
 		Scanner mine = null;
+		// This sets a file named 'myfile' as a new File
+		// This means it set the file, that we named "TM.log", as a type of File
+		// This will then allow cmdSummary to correctly read the file
 		File myfile = new File("TM.log");
+		// Set 'mine' as a Scanner, with the File that we set previously
+		// This allows the File, 'myfile', to be read by the Scanner class/operator
 		mine = new Scanner(myfile);
+		// This while loop will loops until there is no more data left to display out of the log file
 		while(mine.hasNext()) {
 
+			// This String is newly created every loop
+			// Once created, it will set its value as the next line of the log file
 			String lineOfFile = mine.nextLine();
+			// This statement allows the String 'lineOfFile' to not display null data, allowing everything to be printed correctly
+			// It is a fail safe to make sure that we don't try to display empty lines of the log file supplied
 			if(!(lineOfFile.contains("null"))) {
-
+				// Once verified the data is not 'null' print the line of the log file we are currently on
 				System.out.println(lineOfFile);
-
 			}
-
 		}
-
+//HELP
+		// This is confusing I NEED TO COME BACK TO WHY THIS IS HERE
+//HELP
 		log.readFile();
 
 	}
-		
+
+	// This will handle the other method of cmdSummary
+	// It takes the data of the log file, a well as the Task that is requested to be summarized
+	// If there is an IOException, it will be thrown once encountered, thus, ONCE AGAIN no need for a try/catch block
 	long cmdSummary(String todo, Log log) throws IOException {
 
 		// Read log file, gather entries
@@ -253,20 +299,6 @@ public class TM {
 	
 
 
-	void cmdDescribe(String data, Log log, String cmd, LocalDateTime timeRN, String desc) throws IOException {
-
-		String line = (timeRN + " " + data + " " + cmd + " " + desc);
-		log.writeLine(line);
-
-	}
-
-
-	void cmdDescribe(String data, Log log, String cmd, LocalDateTime timeRN, String desc, String Size) throws IOException {
-
-		String line = (timeRN + " " + data + " " + cmd + " " + desc + " " + Size);
-		log.writeLine(line);
-
-	}
 
 
 
@@ -396,9 +428,6 @@ public class TM {
 			String stringbean = ("\nSummary for Task: " + this.name + "\nDescription for Task: " + this.desc + Size + "\nDuration for Task: " + this.timeAhora );
 			return stringbean;
 		}
-
-
-
 
 		long taskDuration(LocalDateTime start, LocalDateTime stop){
 				long dur = ChronoUnit.SECONDS.between(start, stop);

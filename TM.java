@@ -291,25 +291,37 @@ public class TM {
 		// Create Task object based on task name, with entries from log
 		Task sumTask = new Task(todo, lines);
 		
-		// Display 
+		// Display the Summary of the task specified from the previous line of code
+		// It does this while converting the Task to a String that is read-able for println()
 		System.out.println(sumTask.toString());
+		
+		// Return the total time spent on the task, among the other details that were displayed alongside it
 		return sumTask.totTime;
 		
 	}
 	
 
-
-
-
-
-
+	// Here is the Log class
+	// This class is used for creating and maintaining the Log file's use
+	// The log file is TM.log
+	// In this file, it stores all the information that the user presents the program with
 	public class Log{
 
+		// This is a public FileWriter, creatively name 'fwriter'
+		// This allows all methods to access this variable, in order to use the Log file that will be created
 		public FileWriter fwriter;
+
+		// This is a public PrintWriter created with the name 'outFile'
+		// This is a part of the Log file's use, allowing all methods to create and use the log file
 		public PrintWriter outFile; 
 
+		// This is the constructor method for the Log class
+		// If it encounters an IOException, it will throw the error, eliminating the use for a try/catch block
 		public Log() throws IOException {
 
+			// Use the FileWriter, fwriter, to create a new log file, or load the log file if already created
+			// It will check to see if it is created, if not, it will create it
+			// It also declares the name of the log file as "TM.log"
 			fwriter = new FileWriter("TM.log", true);
 			outFile = new PrintWriter(fwriter);
 
